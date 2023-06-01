@@ -1,0 +1,12 @@
+dicom_dir/
+tiff_images/
+age.png
+body.png
+cancers.png
+code.zip
+label.png
+mlp.pkl
+model2.h5
+overview.csv
+tiff_images.zip
+.DS_Store
