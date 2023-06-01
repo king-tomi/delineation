@@ -10,3 +10,4 @@ model2.h5
 overview.csv
 tiff_images.zip
 .DS_Store
+env/

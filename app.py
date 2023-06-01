@@ -1,11 +1,7 @@
-from typing import Dict
 import rasterio
 import streamlit as stream
-from PIL import Image
 import numpy as np
 from keras.models import load_model
-import os
-import pickle
 
 def main():
     #Welcome message
@@ -15,7 +11,7 @@ def main():
     file = stream.file_uploader("Upload",type=["png","jpg","jpeg", "tif", "dcm"])
 
     if file is not None:
-        path = os.path.join("tiff_images/" + file.name)
+        path = file.name
         with rasterio.open(path) as img:
             arr = img.read()
             arr = arr.reshape((512,512,1))
@@ -25,22 +21,13 @@ def main():
             arr = arr.reshape(1,512,512,1)
         main_button = stream.button("Classify")
         if main_button:
-            direct = os.getcwd()
-            with open(direct + "/" + "mlp.pkl", "rb") as f:
-                model = pickle.load(f)
-            model2 = load_model(direct +  "/" + "model.h5") 
-            clss = model.predict(im)
-            age = model2.predict(arr)
-            print(age)
+            model = load_model("model.h5") 
+            clss = model.predict(arr)
 
-            if int(clss[0]) < 0.5 and int(age[0][-1]) * 100 > 50:
-                txt = "The tumor scan is malignant, however it has been there for a long time. A surgery is suggested to get it out as soon as possible"
-            elif int(clss[0]) < 0.5 and int(age[0][-1]) * 100 < 50:
-                txt = "The tumor scan is malignant and has not been present for long. a treatment is advised"
-            elif int(clss[0]) >= 0.5 and int(age[0][-1]) * 100 > 50:
-                txt = "The tumor scan is benign and has been there for a long time. it is quite a dangerous situation, treatment is advised immediately."
-            elif int(clss[0]) >= 0.5 and int(age[0][-1]) * 100 < 50:
-                txt = "The tumor is benign, however, it is in its early stage. treatment advised"
+            if int(clss[0]) < 0.5:
+                txt = "The tumor is malignant"
+            elif int(clss[0]) >= 0.5:
+                txt = "The tumor is benign"
             else:
                 txt = "This is an unknown image, please check well"
             stream.write(txt)
