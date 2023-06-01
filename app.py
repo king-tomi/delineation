@@ -2,6 +2,7 @@ import rasterio
 import streamlit as stream
 import numpy as np
 from keras.models import load_model
+import os
 
 def main():
     #Welcome message
@@ -9,9 +10,11 @@ def main():
     stream.write("Hello! welcome to T-Classify, a Tumor delineation application that allows you to classify a tumor image as bening or malgnant.")
     stream.write("Please click the 'Browse files' button or drag and drop an image file below to classify your image")
     file = stream.file_uploader("Upload",type=["png","jpg","jpeg", "tif", "dcm"])
+    
+    pathf = os.getcwd()
 
     if file is not None:
-        path = file.name
+        path = os.path.join(pathf, file.name)
         with rasterio.open(path) as img:
             arr = img.read()
             arr = arr.reshape((512,512,1))
@@ -21,7 +24,7 @@ def main():
             arr = arr.reshape(1,512,512,1)
         main_button = stream.button("Classify")
         if main_button:
-            model = load_model("model.h5") 
+            model = load_model(os.path.join(pathf, "model.h5")) 
             clss = model.predict(arr)
 
             if int(clss[0]) < 0.5:
