@@ -8,7 +8,7 @@ import os
 def main():
     #Welcome message
     stream.title("Tumor Delineation Web app")
-    stream.write("Hello! welcome to T-Classify, a Tumor delineation application that allows you to classify a tumor image as bening or malgnant.")
+    stream.write("Hello! welcome to T-Classify, a Tumor delineation application that allows you to classify a CT image as with or without tumor.")
     stream.write("Please click the 'Browse files' button or drag and drop an image file below to classify your image")
     file = stream.file_uploader("Upload",type=["png","jpg","jpeg", "tif", "dcm"])
     
