@@ -16,9 +16,9 @@ def main():
 
     if file is not None:
         if "tif" in file.name:
-            path = os.path.join(pathf, f"delineation/tiff_images/{file.name}")
+            path = os.path.join(pathf, f"tiff_images/{file.name}")
         else:
-            path = os.path.join(pathf, f"delineation/dicom_dir/{file.name}")
+            path = os.path.join(pathf, f"dicom_dir/{file.name}")
 
         with rasterio.open(path) as img:
             arr = img.read()
