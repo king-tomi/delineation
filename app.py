@@ -29,7 +29,7 @@ def main():
             arr = arr.reshape(1,512,512,1)
         main_button = stream.button("Classify")
         if main_button:
-            model = load_model(os.path.join(pathf, "delineation/model.h5")) 
+            model = load_model(os.path.join(pathf, "model.h5")) 
             clss = model.predict(arr)
 
             if int(clss[0]) < 0.5:
