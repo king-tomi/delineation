@@ -1,4 +1,5 @@
 import rasterio
+from PIL import Image
 import streamlit as stream
 import numpy as np
 from keras.models import load_model
@@ -14,23 +15,27 @@ def main():
     pathf = os.getcwd()
 
     if file is not None:
-        path = os.path.join(pathf, file.name)
+        if "tif" in file.name:
+            path = os.path.join(pathf, f"delineation/tiff_images/{file.name}")
+        else:
+            path = os.path.join(pathf, f"delineation/dicom_dir/{file.name}")
+
         with rasterio.open(path) as img:
             arr = img.read()
             arr = arr.reshape((512,512,1))
             arr = np.array(arr) / 255
             im =[arr.flatten()]
-            stream.image(img.read().reshape(512,512,1), caption="CT Scan", clamp=True)
+            stream.image(img.read().reshape(512, 512, 1), caption="CT Scan", clamp=True)
             arr = arr.reshape(1,512,512,1)
         main_button = stream.button("Classify")
         if main_button:
-            model = load_model(os.path.join(pathf, "model.h5")) 
+            model = load_model(os.path.join(pathf, "delineation/model.h5")) 
             clss = model.predict(arr)
 
             if int(clss[0]) < 0.5:
-                txt = "The tumor is malignant"
+                txt = "The image is one without tumor"
             elif int(clss[0]) >= 0.5:
-                txt = "The tumor is benign"
+                txt = "The image is one with tumor"
             else:
                 txt = "This is an unknown image, please check well"
             stream.write(txt)
